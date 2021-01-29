@@ -7,6 +7,7 @@ import com.lambdaschool.bookstore.models.Book;
 import com.lambdaschool.bookstore.models.Section;
 import com.lambdaschool.bookstore.models.Wrote;
 import com.lambdaschool.bookstore.repository.BookRepository;
+import static org.mockito.ArgumentMatchers.any;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -115,26 +117,58 @@ public class BookServiceImplUnitTestNoDB
     @Test
     public void findAll()
     {
+        Mockito.when(bookrepos.findAll())
+                .thenReturn(myBookList);
+        assertEquals(5, bookService.findAll().size());
     }
 
     @Test
     public void findBookById()
     {
+        Mockito.when(bookrepos.findById(5L))
+                .thenReturn(Optional.of(myBookList.get(0)));
+
+        assertEquals("admin", bookService.findBookById(5L).getTitle());
     }
 
     @Test(expected = ResourceNotFoundException.class)
     public void notFindBookById()
     {
+        Mockito.when(bookrepos.findById(17L))
+                .thenReturn(Optional.empty());
+
+        assertEquals("admin", bookService.findBookById(17L).getTitle());
     }
 
     @Test
     public void delete()
     {
+        Mockito.when(bookrepos.findById(666L))
+                .thenReturn(Optional.of(myBookList.get(0)));
+
+        Mockito.doNothing()
+                .when(bookrepos)
+                .deleteById(666L);
+
+        bookService.delete(666L);
+        assertEquals( 5, myBookList.size());
     }
 
     @Test
     public void save()
     {
+        Section s9 = new Section("Religion");
+        s9.setSectionid(9);
+
+        Book b1 = new Book("Divine Comedy", "9780786102563", 1472, s9);
+        b1.setBookid(666);
+
+        Mockito.when(bookrepos.save(any(Book.class)))
+                .thenReturn(b1);
+
+        Mockito.when(bookrepos.findById(9L)).thenReturn(Optional.of(s9));
+
+        assertEquals("Divine Comedy", bookService.save(b1).getTitle());
     }
 
     @Test
