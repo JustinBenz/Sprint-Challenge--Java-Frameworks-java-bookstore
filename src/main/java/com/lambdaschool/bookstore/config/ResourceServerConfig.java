@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHand
  */
 @Configuration
 @EnableResourceServer
-public class ResourceServerConfig
+public class  ResourceServerConfig
         extends ResourceServerConfigurerAdapter
 {
     private static final String RESOURCE_ID = "resource_id";
@@ -55,9 +55,14 @@ public class ResourceServerConfig
                 .antMatchers("/users/**",
                              "/useremails/**",
                              "/oauth/revoke-token",
-                             "/logout")
+                             "/logout",
+                             "/books/books",
+                             "/books/book/{id}"
+                        )
                 .authenticated()
-                .antMatchers("/roles/**")
+                .antMatchers("/roles/**",
+                             "/books/book",
+                             "/books/book/{id}")
                 .hasAnyRole("ADMIN", "DATA")
                 .anyRequest().denyAll()
                 .and()
