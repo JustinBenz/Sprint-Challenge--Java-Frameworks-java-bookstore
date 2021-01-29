@@ -8,6 +8,8 @@ import com.lambdaschool.bookstore.models.Section;
 import com.lambdaschool.bookstore.models.Wrote;
 import com.lambdaschool.bookstore.repository.BookRepository;
 import static org.mockito.ArgumentMatchers.any;
+
+import com.lambdaschool.bookstore.repository.SectionRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +37,9 @@ public class BookServiceImplUnitTestNoDB
 
     @MockBean
     private BookRepository bookrepos;
+
+    @MockBean
+    private SectionRepository sectionrepos;
 
     List<Book> myBookList = new ArrayList<>();
 
@@ -166,7 +171,7 @@ public class BookServiceImplUnitTestNoDB
         Mockito.when(bookrepos.save(any(Book.class)))
                 .thenReturn(b1);
 
-        Mockito.when(bookrepos.findById(9L)).thenReturn(Optional.of(s9));
+        Mockito.when(sectionrepos.findById(9L)).thenReturn(Optional.of(s9));
 
         assertEquals("Divine Comedy", bookService.save(b1).getTitle());
     }
